@@ -14,6 +14,21 @@ int main (int argc,const char *argv[])
     [circle draw];
     [circle release];
 
+    TPResCache *cache = [[TPResCache alloc]
+                                initWithbLockCache: FALSE
+                                dwTickCount: 0];
+    cache.m_dwTickCount = 1;
+    NSLog(@"output %d",cache.m_dwTickCount);
+
+    NSDate *date = [NSDate date];
+
+    NSString *str1 = @"";
+    NSLog(@"%@",str1);
+
+   // UUID ud = [NSUUID init];
+    //NSString *uuid = [[NSUUID UUID] UUIDString];
+   // NSLog(@"%@",uuid);
+
     //file search ,lookup
     NSString *sFile = @"jpg";
     //TPFileOperation *fileOpera = [TPFileOperation new];
@@ -23,12 +38,14 @@ int main (int argc,const char *argv[])
     [baseDataType Test];
     [baseDataType release];
 
-    TPCacheManage *cacheM = [TPCacheManage new];
+    TPResCache *cacheM = [TPResCache new];
     [cacheM retain];
     NSLog(@"%d",[cacheM retainCount]);
     [cacheM release];
     NSLog(@"%d",[cacheM retainCount]);
     [cacheM autorelease];
+
+
     [pool release];
     return 0;
 }

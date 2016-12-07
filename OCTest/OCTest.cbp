@@ -5,6 +5,7 @@
 		<Option title="OCTest" />
 		<Option pch_mode="2" />
 		<Option compiler="gnustep_mingw_compiler" />
+		<Option virtualFolders="BaseHeaders\;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/OCTest" prefix_auto="1" extension_auto="1" />
@@ -33,10 +34,34 @@
 		</Compiler>
 		<Unit filename="Circle.h" />
 		<Unit filename="TPBaseDataType.h" />
+		<Unit filename="TPBaseDataTypeDefine.h">
+			<Option virtualFolder="BaseHeaders/" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="TPBaseObject.h">
+			<Option virtualFolder="BaseHeaders/" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="TPCacheManage.h" />
 		<Unit filename="TPFileOperation.h" />
+		<Unit filename="TPResBase.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="TPResCacheManage.h" />
+		<Unit filename="TPResCatalogCache.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="TPResClipCache.h" />
+		<Unit filename="TPResDataTypeDefine.h">
+			<Option virtualFolder="BaseHeaders/" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="TPResObject.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="TPResStorageFilePlugin.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="main.m">
 			<Option compilerVar="CC" />
 			<Option compile="1" />
