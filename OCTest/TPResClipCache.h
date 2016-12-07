@@ -1,6 +1,6 @@
-#import <Foundation/Foundation.h>
+#import "TPResBase.h"
 
-@interface TPResClipCache : NSObject
+@interface TPResClipCache : TPResBase
 {
 
 }

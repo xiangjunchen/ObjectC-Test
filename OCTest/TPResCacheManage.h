@@ -2,18 +2,33 @@
 
 @class TPResClipCache;
 
-@interface TPResCacheManage : NSObject
+@interface TPResCache : NSObject
 {
+    BOOL  m_bLockCache;
+    DWORD m_dwTickCount;
+    NSString *name;
+
     NSMutableArray *resClipCaches;
 }
+@property BOOL  m_bLockCache;
+@property DWORD m_dwTickCount;
+@property (copy) NSString *name;
+
+- (id)   initWithbLockCache: (BOOL) bLock dwTickCount:(DWORD) dwTick;
 - (void) setClipCache: (TPResClipCache *) clipCache
          atIndex:      (int) index;
 - (void) addClipCache: (TPResClipCache *) clipCache;
+- (void) removeClipCacheAtIndex: (int) index;
 - (TPResClipCache *) clipCacheAtIndex: (int) index;
 - (void) print;
 @end
 
-@implementation TPResCacheManage
+@implementation TPResCache
+
+@synthesize m_bLockCache;
+@synthesize m_dwTickCount;
+@synthesize name;
+
 - (id) init
 {
     if(self = [super init]){
@@ -22,6 +37,20 @@
         for(i = 0 ; i < 4 ; i++){
             [resClipCaches addObject: [NSNull null]];
         }
+    }
+    return (self);
+}
+- (void) dealloc
+{
+    [name release];
+    [resClipCaches dealloc];
+    [super dealloc];
+}
+- (id)   initWithbLockCache: (BOOL) bLock dwTickCount:(DWORD) dwTick
+{
+    if(self = [super init]){
+        m_dwTickCount = dwTick;
+        m_bLockCache  = bLock;
     }
     return (self);
 }
@@ -41,6 +70,10 @@
 {
     [resClipCaches addObject: ClipCache];
 }
+- (void) removeClipCacheAtIndex: (int) index
+{
+    [resClipCaches removeObjectAtIndex: index];
+}
 - (void) print
 {
     int i;
@@ -48,8 +81,4 @@
         NSLog(@"%@",[self clipCacheAtIndex: i]);
     }
 }
-- (void) dealloc
-{
-    [resClipCaches dealloc];
-    [super dealloc];
-}
+
