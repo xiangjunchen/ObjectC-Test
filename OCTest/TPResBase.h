@@ -4,6 +4,8 @@
 {
     DWORD			m_dwVersion;				//	版本号
 	DWORD           m_dwState;
+	NSString*       m_sResName;
+	NSString*       m_resIconPath;
 	NSString* 		m_guidRes;		    		//	唯一索引
     NSString* 		m_guidNode;                 //  目录GUID
 	TP_RES_TYPE     m_eResType;					//	资源类型
@@ -23,9 +25,13 @@
 	UINT            m_uResSource;               //资源来源
 	BYTE            m_lColorIndex;
 	BOOL            m_bNotifyUI;
-	TPResObject    *m_pUsedRes;
+	TPResObject*    m_pUsedRes;
 	BOOL            m_bNeedUpdateView;
+    NSString*       m_sCatalogKeyWord;              //关键字
+	NSString*       m_sCatalogDescription;          //描述
 }
+@property NSString*   m_sResName;
+@property NSString*   m_resIconPath;
 @property NSString*   m_guidRes;
 @property NSString*   m_guidNode;
 @property TP_RES_TYPE m_eResType;
@@ -34,6 +40,8 @@
 @end
 
 @implementation TPResBase
+@synthesize m_sResName;
+@synthesize m_resIconPath;
 @synthesize m_guidRes;
 @synthesize m_guidNode;
 @synthesize m_eResType;
@@ -46,6 +54,6 @@
 }
 - (void) print
 {
-    NSLog(@"  guidRes is %@, ResType is %lf,guidnode is %@", m_guidRes,m_eResType,m_guidNode);//DWORD
+    NSLog(@"  resname is %@, ResType is %lf,guidres is %@", m_sResName,m_eResType,m_guidRes);//DWORD
 }
 @end

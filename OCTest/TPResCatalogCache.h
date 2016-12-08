@@ -2,17 +2,11 @@
 
 @interface TPResCatalogCache : TPResBase
 {
-	TPResCatalogCache*              *m_pParentCatalog;
-	NSMutableArray*                 *m_aChildCatalog;
-	long                             m_lViewType;                    //显示模式
-	BOOL                             m_bShow;                        //是否显示
-	long                             m_lIconSize;                    //排列
-
-	NSString*                        m_sCatalogName;                 //节点名称
-    NSString*                        m_sCatalogKeyWord;              //关键字
-	NSString*                        m_sCatalogDescription;          //描述
-
-	BOOL                             m_bLoadChild;
+	TPResCatalogCache*  *m_pParentCatalog;
+	NSMutableArray*     *m_aChildCatalog;
+	long                 m_lViewType;                    //显示模式
+	BOOL                 m_bShow;                        //是否显示
+	BOOL                 m_bLoadChild;
 }
 - (void) setChildCatalog: (TPResCatalogCache *) childCatalog
          atIndex:      (int) index;
@@ -28,8 +22,16 @@
 {
     if(self = [super init]){
         m_eResType = TP_RES_CATALOG;
+        m_bShow    = TRUE;
+        m_bLoadChild = FALSE;
+        m_aChildCatalog = [[NSMutableArray array] init];
     }
     return (self);
+}
+- (void) dealloc
+{
+    [m_aChildCatalog dealloc];
+    [super dealloc];
 }
 - (void) setChildCatalog: (TPResCatalogCache *) childCatalog
          atIndex:      (int) index
@@ -62,6 +64,14 @@
                 break;
             }
         }
+    }
+}
+- (void) print
+{
+    [super print];
+    for(int i = 0 ; i < [m_aChildCatalog count]; i++){
+        TPResCatalogCache *childCatalog = (TPResCatalogCache *)[m_aChildCatalog objectAtIndex: i];
+        NSLog(@"child name is %@, index is %d",childCatalog.m_sResName,i);
     }
 }
 @end

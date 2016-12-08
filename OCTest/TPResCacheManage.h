@@ -23,6 +23,11 @@
           catalogObject: (TPResCatalogCache *) catalogObject;
 - (void) removeCatalogCacheForKey: (NSString*) guid;
 - (TPResCatalogCache *) catalogCacheForKey: (NSString*) guid;
+//Clip
+- (void) setClipCacheObject: (NSString*) guid
+          clipObject: (TPResClipCache *) clipObject;
+- (void) removeClipCacheForKey: (NSString*) guid;
+- (TPResClipCache *) clipCacheForKey: (NSString*) guid;
 //
 - (void) emptyCache;
 - (void) print;
@@ -81,19 +86,41 @@
 {
     [m_resCatalogCaches removeObjectForKey: guid];
 }
-
+- (TPResClipCache *) clipCacheForKey: (NSString*) guid
+{
+    TPResClipCache *clipCache = [NSNull null];
+    clipCache = [m_resClipCaches objectForKey: guid];
+    return clipCache;
+}
+- (void) setClipCacheObject: (NSString*) guid
+          clipObject: (TPResClipCache *) clipObject
+{
+    [m_resClipCaches setObject: clipObject
+                        forKey: guid];
+    NSLog(@"Clip has %d count.",[m_resClipCaches count]);
+}
+- (void) removeClipCacheForKey: (NSString*) guid
+{
+    [m_resClipCaches removeObjectForKey: guid];
+}
 - (void) print
 {
     NSLog(@"Catalog has %d count.",[m_resCatalogCaches count]);
     for (id akey in [m_resCatalogCaches allKeys]) {
         TPResCatalogCache *catalogCache= (TPResCatalogCache *)[m_resCatalogCaches objectForKey:akey];
-        NSLog(@"Catalog guid is %@.",catalogCache.m_guidRes);
+        //NSLog(@"Catalog guid is %@.",catalogCache.m_guidRes);
         [catalogCache print];
+        for (id akey in [m_resClipCaches allKeys]) {
+            TPResClipCache *clipCache= (TPResClipCache *)[m_resClipCaches objectForKey:akey];
+            [clipCache print];
+            if(TRUE == [clipCache.m_guidNode isEqualToString:catalogCache.m_guidRes]){
+                NSLog(@"Clip %@ is %@ child .",clipCache.m_sResName,catalogCache.m_sResName);
+            }
+        }
     }
-    NSLog(@"Clip has %d count.",[m_resClipCaches count]);
     for (id akey in [m_resClipCaches allKeys]) {
         TPResClipCache *clipCache= (TPResClipCache *)[m_resClipCaches objectForKey:akey];
         [clipCache print];
     }
 }
-
+@end

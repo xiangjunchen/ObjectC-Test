@@ -33,6 +33,10 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="Circle.h" />
+		<Unit filename="NXBaseVADef.h">
+			<Option virtualFolder="BaseHeaders/" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="TPBaseDataType.h" />
 		<Unit filename="TPBaseDataTypeDefine.h">
 			<Option virtualFolder="BaseHeaders/" />

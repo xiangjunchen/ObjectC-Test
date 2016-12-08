@@ -1,5 +1,11 @@
 #import "TPBaseDataTypeDefine.h"
 
+typedef enum{
+    TP_CLIP_ONLINE,
+    TP_CLIP_DOWNLOAD,
+    TP_CLIP_LIVE
+}TP_CLIP_STATE;
+
 #define TP_RESBASESTATE_NOSAVE      0x00000001
 #define TP_RESBASESTATE_VIRTUALRES  0x00000002
 #define TP_RESBASESTATE_RELOAD      0x00000004
@@ -124,7 +130,7 @@ typedef void* HRESDATA;
 struct TPResClipImpData
 {
     NSString* guidClip;
-    HRESDATA hCatParent;                                                //如果取值不为空，此素材创建到这个目录下
+    NSString* guidParent;
     NSString* guidDBType;
     NSString* sName;                                                      //素材名称
     NSString* sKeyWord;                                                   //关键字
@@ -148,6 +154,7 @@ struct TPResClipImpData
     INT64 lRecData;							//拍摄时间
 };
 //////////////////////////////////////////////////////////////////////////
+
 typedef struct stu_TPResBaseData           //所有资源的基本信息
 {
 	DWORD			dwVersion;		    	//版本号
@@ -155,8 +162,6 @@ typedef struct stu_TPResBaseData           //所有资源的基本信息
 	NSString*       resName;
     NSString*       resIconPath;
 	NSString* 		guidRes;		    	//唯一索引
-	NSString* 		guidLink;               //快捷方式
-	NSString* 		guidType;               //类型唯一索引
 	NSString* 		guidDBType;             //数据库类型 ，资源可能来自不同的数据库
 	TP_RES_TYPE     eResType;				//资源类型
 
@@ -191,13 +196,16 @@ typedef struct stu_TPResBaseData           //所有资源的基本信息
 typedef struct _tagTPResCatalogData{
     TPResBaseData* stuBaseData;
 }TPResCatalogData;
+
 //素材信息
 typedef struct _tagTPResClipData
 {
     TPResBaseData* stuBaseData;
+    TP_CLIP_STATE eClipState;
     __int64 lTrimIn;		//入点
     __int64 lTrimOut;		//出点
     __int64 lLength;
+    __int64 lSeekFrame;
     DWORD dwFileType;
     TPClipQualityFile2 aQuality[TP_CLIP_QUALITY_MAX];   //文件信息
 }TPResClipData;
