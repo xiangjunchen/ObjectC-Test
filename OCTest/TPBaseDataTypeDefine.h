@@ -1,68 +1,127 @@
+#include "NXBaseVADef.h"
 
+#define TP_CLIP_FILE_MAX 16
+#define MAX_LONG 0x7ffffff
+
+typedef DWORD TP_CLIP_STRATEGY_TYPE;
 typedef enum
 {
-	TP_VIDEOSTANDARD_UNKNOW				= 0x00000000,		//Invalid
+    TP_CLIP_STRATEGY_HIGH   = 0,
+    TP_CLIP_STRATEGY_LOW    = 1,
+    TP_CLIP_STRATEGY_THIS   = 2,
+}eTP_CLIP_STRATEGY_TYPE;
 
-	TP_VIDEOSTANDARD_PAL				= 0x00000001,		//PAL size:720*576 f/s : 25
-	TP_VIDEOSTANDARD_NTSC_2997			= 0x00000002,		//NTSC size:720*486  f/s : 29.97
-	TP_VIDEOSTANDARD_NTSC_30			= 0x00000004,		//NTSC size:720*486 f/s : 30
-	TP_VIDEOSTANDARD_SECAM				= 0x00000008,		//SECAM
+typedef DWORD TP_CLIP_QUALITY_TYPE;
+typedef enum
+{
+    TP_CLIP_QUALITY_HIGH   = 0,
+    TP_CLIP_QUALITY_LOW    = 1,
+    TP_CLIP_QUALITY_MID    = 2,
+    TP_CLIP_QUALITY_3      = 3,
+    TP_CLIP_QUALITY_4      = 4,
+    TP_CLIP_QUALITY_MIX    = 5,
+    TP_CLIP_QUALITY_MAX    = 6,
+}eTP_CLIP_QUALITY_TYPE;
 
-	TP_VIDEOSTANDARD_1920_1080_50i		= 0x00000010,		//HDTV size:1920*1080 f/s : 25  interlaced
-	TP_VIDEOSTANDARD_1920_1080_5994i	= 0x00000020,		//HDTV size:1920*1080 f/s : 29.97 interlaced
-	TP_VIDEOSTANDARD_1920_1080_60i		= 0x00000040,		//HDTV size:1920*1080 f/s : 30 interlaced
+typedef DWORD TP_CLIP_FILE_TYPE;
+#define  TP_CLIP_FILE_VIDEO  		0
+#define  TP_CLIP_FILE_A1     		1
+#define  TP_CLIP_FILE_A2     		2
+#define  TP_CLIP_FILE_A3     		3
+#define  TP_CLIP_FILE_A4     		4
+#define  TP_CLIP_FILE_A5     		5
+#define  TP_CLIP_FILE_A6     		6
+#define  TP_CLIP_FILE_A7     		7
+#define  TP_CLIP_FILE_A8     		8
 
-	TP_VIDEOSTANDARD_1920_1080_2398p	= 0x00000080,		//HDTV size:1920*1080 f/s : 23.98 progressive
-	TP_VIDEOSTANDARD_1920_1080_24p		= 0x00000100,		//HDTV size:1920*1080 f/s : 24 progressive
-	TP_VIDEOSTANDARD_1920_1080_25p		= 0x00000200,		//HDTV size:1920*1080 f/s : 25 progressive
-	TP_VIDEOSTANDARD_1920_1080_2997p	= 0x00000400,		//HDTV size:1920*1080 f/s : 29.97 progressive
-	TP_VIDEOSTANDARD_1920_1080_30p		= 0x00000800,		//HDTV size:1920*1080 f/s : 30 progressive
+#define  TP_CLIP_FILE_A9     		9
+#define  TP_CLIP_FILE_A10    		10
+#define  TP_CLIP_FILE_A11    		11
+#define  TP_CLIP_FILE_A12    		12
+#define  TP_CLIP_FILE_A13    		13
+#define  TP_CLIP_FILE_A14    		14
+#define  TP_CLIP_FILE_A15    		15
+#define  TP_CLIP_FILE_A16    		16
 
-	TP_VIDEOSTANDARD_1280_720_2398p		= 0x00001000,	    //HDTV size:1280*720 f/s : 23.98 progressive
-	TP_VIDEOSTANDARD_1280_720_24p		= 0x00002000,		//HDTV size:1280*720 f/s : 24 progressive
-	TP_VIDEOSTANDARD_1280_720_50p		= 0x00004000,		//HDTV size:1280*720 f/s : 50 progressive
-	TP_VIDEOSTANDARD_1280_720_5994p		= 0x00008000,		//HDTV size:1280*720 f/s : 59.94 progressive
+/*=======================================================================================*/
+typedef DWORD TP_CLIP_TRANS_STYLE;
+#define TP_CLIP_TRANS_NONE              0x00000001   //不转码
+#define TP_CLIP_TRANS_IMMEDIATELY       0x00000002   //导入时转码
+#define TP_CLIP_TRANS_LOCALBACKGROUND   0x00000004   //本机后台转码
+#define TP_CLIP_TRANS_SERVERBACKGROUND  0x00000008   //服务器后台转码
 
-	TP_VIDEOSTANDARD_1440_1080_50i		= 0x00010000,	    //HD  size:1440*1080 f/s : 25 interlaced
-	TP_VIDEOSTANDARD_1440_1080_5994i	= 0x00020000,	    //HD  size:1440*1080 f/s : 29.97 interlaced
-	TP_VIDEOSTANDARD_1440_1080_60i		= 0x00040000,	    //HD  size:1440*1080 f/s : 30 interlaced
+typedef DWORD TP_CLIP_MOVE_STYLE;
+#define TP_CLIP_MOVE_NONE              0x00000001    //不迁移原文件
+#define TP_CLIP_MOVE_COPY              0x00000002    //拷贝
+#define TP_CLIP_MOVE_MOVE              0x00000004    //移动
 
-	TP_VIDEOSTANDARD_PAL_16_9			= 0x00080000,		//PAL size:720*576 f/s : 25
-	TP_VIDEOSTANDARD_NTSC_2997_16_9		= 0x00100000,		//NTSC size:720*486  f/s : 29.97
-	TP_VIDEOSTANDARD_NTSC_30_16_9		= 0x00200000,		//NTSC size:720*486 f/s : 30
-	TP_VIDEOSTANDARD_NTSC_2997_480		= 0x00400000,		//NTSC size:720*480  f/s : 29.97  //先留着，防止以后特殊情况再改成480
-	TP_VIDEOSTANDARD_NTSC_30_480		= 0x00800000,		//NTSC size:720*480 f/s : 30 //先留着，防止以后特殊情况再改成480
+typedef DWORD  TP_CLIP_CLASS_TYPE;                //素材类型
+
+#define  TP_CLIP_CLASS_UNKNOW 0x00000000
+
+#define  TP_CLIP_CLASS_V      0x00000001
+#define  TP_CLIP_CLASS_A1     0x00000002
+#define  TP_CLIP_CLASS_A2     0x00000004
+#define  TP_CLIP_CLASS_A3     0x00000008
+#define  TP_CLIP_CLASS_A4     0x00000010
+#define  TP_CLIP_CLASS_A5     0x00000020
+#define  TP_CLIP_CLASS_A6     0x00000040
+#define  TP_CLIP_CLASS_A7     0x00000080
+#define  TP_CLIP_CLASS_A8     0x00000100
+#define  TP_CLIP_CLASS_A      (TP_CLIP_CLASS_A1 | TP_CLIP_CLASS_A2 | TP_CLIP_CLASS_A3 | TP_CLIP_CLASS_A4 | TP_CLIP_CLASS_A5 | TP_CLIP_CLASS_A6 | TP_CLIP_CLASS_A7 | TP_CLIP_CLASS_A8)
+
+#define  TP_CLIP_CLASS_ALL     0x0000FFFF
+#define  TP_CLIP_CLASS_G      0x00040000
+#define  TP_CLIP_CLASS_KEY    0x00080000
+#define  TP_CLIP_CLASS_EFF    0x00100000
+
+typedef struct  //文件格式
+{
+    DWORD               dwVersion;
+    int                 bAVInterleave;      //视音频同一文件
+    NSString*           guidVideoFileType;  //文件类型GUID
+    TPVideoFormat       stuVideoFormat;     //视频格式
+    NSString*           guidAudioFileType;  //文件类型GUID
+    TPAudioFormatEx     stuAudioFormat;     //音频格式
+    TPVideoFormat       stuKeyFormat;       //包含的键文件格式
+    NSString*           guidKeyFileType;    //文件类型GUID
+
+    TPVideoFormat       stuDepthFormat;     //包含的深度文件格式
+    NSString*           guidDepthFileType;  //文件类型GUID
+
+    BOOL                bStereoscopic;      //3D的视频格式 3D by zhh
+    DWORD               dwClipClass;
+}TPClipVAFormat;
+
+//素材的文件信息结构定义
+typedef struct
+{
+    DWORD                   dwVersion;
+    TP_CLIP_QUALITY_TYPE    eQualityType;
+    TP_CLIP_CLASS_TYPE      eClipClass;
+    TP_CLIP_CLASS_TYPE      eDBEClass;
+    TPClipVAFormat          stuClipVAFormat;    //包含所有视音频信息
+    long                    lSubIndex;
+    int                     uQualityState;
+    //这些字段应该合并成一个结构体，然后声明一个结构体的数组或 vector
+    NSString*               sDescription[TP_CLIP_FILE_MAX];
+    double                  dFade[TP_CLIP_FILE_MAX];
+    int                     uQualityFlag[TP_CLIP_FILE_MAX];
+    double                  dPan[TP_CLIP_FILE_MAX];
+    double                  dEQ[TP_CLIP_FILE_MAX][8];
+}TPClipQualityFile2;
+
+typedef enum {
+    eRes_program = 0,
+    eRes_effTemplate,
+    eRes_cgTemplate,
+    eRes_efftrTemplate,
+    eRes_subjectTemplate,
+    eRes_cameraFilter,
+    eRes_effect,
+    eRes_clip,
+    eRes_icon
+}eResType;
 
 
-	TP_VIDEOSTANDARD_1280_1080_50i		= 0x01000000,	    //HD  size:1280*1080 f/s : 25 interlaced
-	TP_VIDEOSTANDARD_1280_1080_5994i	= 0x02000000,	    //HD  size:1280*1080 f/s : 29.97 interlaced
-	TP_VIDEOSTANDARD_1280_1080_60i		= 0x04000000,	    //HD  size:1280*1080 f/s : 30 interlaced
 
-	//以下设置都是临时使用的。 将来如何定义重新弄
-
-	TP_VIDEOSTANDARD_1280_720_25p		= 0x10000001,		//
-	TP_VIDEOSTANDARD_1280_720_2997p		= 0x10000002,		//
-
-	TP_VIDEOSTANDARD_1920_1080_50p		= 0x10000004,		//
-	TP_VIDEOSTANDARD_1920_1080_5994p	= 0x10000008,		//
-
-	TP_VIDEOSTANDARD_1440_1080_50p		= 0x10000010,	    //
-	TP_VIDEOSTANDARD_1440_1080_5994p	= 0x10000020,	    //
-	TP_VIDEOSTANDARD_1440_1080_25p		= 0x10000040,	    //
-	TP_VIDEOSTANDARD_1440_1080_2997p	= 0x10000080,	    //
-
-	TP_VIDEOSTANDARD_PAL_50P			= 0x10000100,		//PAL size:720*576 f/s : 25
-	TP_VIDEOSTANDARD_NTSC_5994P			= 0x10000200,		//NTSC size:720*486  f/s : 29.97
-	TP_VIDEOSTANDARD_PAL_50P_16_9		= 0x10000400,
-	TP_VIDEOSTANDARD_NTSC_5994P_16_9	= 0x10000800,
-
-	TP_VIDEOSTANDARD_PAL_25P			= 0x10001000,		//PAL size:720*576 f/s : 25
-	TP_VIDEOSTANDARD_NTSC_2997P			= 0x10002000,		//NTSC size:720*486  f/s : 29.97
-	TP_VIDEOSTANDARD_PAL_25P_16_9		= 0x10004000,
-	TP_VIDEOSTANDARD_NTSC_2997P_16_9	= 0x10008000,
-
-	TP_VIDEOSTANDARD_720_480_2398p		= 0x10010000,
-}TP_VIDEO_STANDARD	;// 桌面视频制式标准枚举定义;
-
-
-#define TP_VIDEOSTANDARD_ALL 0xffffffff   //缺省支持所有制式 hh

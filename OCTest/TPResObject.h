@@ -28,7 +28,7 @@
 @end
 
 @implementation TPResObject
-- (void) init
+- (id) init
 {
     if(self = [super init]){
         [self Reset];

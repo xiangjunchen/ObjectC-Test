@@ -1,84 +1,99 @@
-#import <Foundation/Foundation.h>
-
+#import "TPBaseObject.h"
+@class TPResCatalogCache;
 @class TPResClipCache;
 
-@interface TPResCache : NSObject
+@interface TPResCache : TPBaseObject
 {
-    BOOL  m_bLockCache;
-    DWORD m_dwTickCount;
-    NSString *name;
+    BOOL                 m_bUpdate;
+    DWORD                m_dwTickUpdate;
+    NSString            *m_sUpdateUrl;
 
-    NSMutableArray *resClipCaches;
+    NSMutableDictionary *m_resCatalogCaches;
+    NSMutableDictionary *m_resClipCaches;
 }
-@property BOOL  m_bLockCache;
-@property DWORD m_dwTickCount;
-@property (copy) NSString *name;
+@property BOOL  m_bUpdate;
+@property DWORD m_dwTickUpdate;
+@property (copy) NSString *m_sUpdateUrl;
 
-- (id)   initWithbLockCache: (BOOL) bLock dwTickCount:(DWORD) dwTick;
-- (void) setClipCache: (TPResClipCache *) clipCache
-         atIndex:      (int) index;
-- (void) addClipCache: (TPResClipCache *) clipCache;
-- (void) removeClipCacheAtIndex: (int) index;
-- (TPResClipCache *) clipCacheAtIndex: (int) index;
+- (id)   initWithbUpdate: (BOOL) bUpdate
+         dwTickUpdate:(DWORD) dwTick
+         sUpdateUrl:(NSString*) sUrl;
+//Catalog
+- (void) setCatalogCacheObject: (NSString*) guid
+          catalogObject: (TPResCatalogCache *) catalogObject;
+- (void) removeCatalogCacheForKey: (NSString*) guid;
+- (TPResCatalogCache *) catalogCacheForKey: (NSString*) guid;
+//
+- (void) emptyCache;
 - (void) print;
 @end
 
 @implementation TPResCache
-
-@synthesize m_bLockCache;
-@synthesize m_dwTickCount;
-@synthesize name;
-
+@synthesize m_bUpdate;
+@synthesize m_dwTickUpdate;
+@synthesize m_sUpdateUrl;
 - (id) init
 {
     if(self = [super init]){
-        resClipCaches = [[NSMutableArray alloc] init];
-        int i ;
-        for(i = 0 ; i < 4 ; i++){
-            [resClipCaches addObject: [NSNull null]];
-        }
+        m_resCatalogCaches = [[NSMutableDictionary dictionary] init];
+        m_resClipCaches = [[NSMutableDictionary dictionary] init];
+    }
+    return (self);
+}
+- (id)   initWithbUpdate: (BOOL) bUpdate
+         dwTickUpdate:(DWORD) dwTick
+         sUpdateUrl:(NSString*) sUrl
+{
+    if(self = [self init]){
+        m_bUpdate = bUpdate;
+        m_dwTickUpdate = dwTick;
+        m_sUpdateUrl = sUrl;
     }
     return (self);
 }
 - (void) dealloc
 {
-    [name release];
-    [resClipCaches dealloc];
+    [self emptyCache];
+    [m_sUpdateUrl release];
+    [m_resCatalogCaches dealloc];
+    [m_resClipCaches dealloc];
     [super dealloc];
 }
-- (id)   initWithbLockCache: (BOOL) bLock dwTickCount:(DWORD) dwTick
+- (void) emptyCache
 {
-    if(self = [super init]){
-        m_dwTickCount = dwTick;
-        m_bLockCache  = bLock;
-    }
-    return (self);
+    [m_resCatalogCaches removeAllObjects];
+    [m_resClipCaches removeAllObjects];
 }
-- (void) setClipCache: (TPResClipCache *) clipCache
-         atIndex:      (int) index
+- (TPResCatalogCache *) catalogCacheForKey: (NSString*) guid
 {
-    [resClipCaches replaceObjectAtIndex: index
-                    withObject: clipCache];
+    TPResCatalogCache *catalogCache = [NSNull null];
+    catalogCache = [m_resCatalogCaches objectForKey: guid];
+    return catalogCache;
 }
-- (TPResClipCache *) clipCacheAtIndex: (int) index
+- (void) setCatalogCacheObject: (NSString*) guid
+          catalogObject: (TPResCatalogCache *) catalogObject
 {
-    TPResClipCache *clipCache;
-    clipCache = [resClipCaches objectAtIndex: index];
-    return (clipCache);
+    [m_resCatalogCaches setObject: catalogObject
+                        forKey: guid];
+    NSLog(@"Catalog has %d count.",[m_resCatalogCaches count]);
 }
-- (void) addClipCache: (TPResClipCache*) ClipCache
+- (void) removeCatalogCacheForKey: (NSString*) guid
 {
-    [resClipCaches addObject: ClipCache];
+    [m_resCatalogCaches removeObjectForKey: guid];
 }
-- (void) removeClipCacheAtIndex: (int) index
-{
-    [resClipCaches removeObjectAtIndex: index];
-}
+
 - (void) print
 {
-    int i;
-    for(i = 0 ; i < [resClipCaches count] ; i++){
-        NSLog(@"%@",[self clipCacheAtIndex: i]);
+    NSLog(@"Catalog has %d count.",[m_resCatalogCaches count]);
+    for (id akey in [m_resCatalogCaches allKeys]) {
+        TPResCatalogCache *catalogCache= (TPResCatalogCache *)[m_resCatalogCaches objectForKey:akey];
+        NSLog(@"Catalog guid is %@.",catalogCache.m_guidRes);
+        [catalogCache print];
+    }
+    NSLog(@"Clip has %d count.",[m_resClipCaches count]);
+    for (id akey in [m_resClipCaches allKeys]) {
+        TPResClipCache *clipCache= (TPResClipCache *)[m_resClipCaches objectForKey:akey];
+        [clipCache print];
     }
 }
 

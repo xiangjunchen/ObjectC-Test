@@ -58,21 +58,22 @@ typedef ULONGLONG   TP_GRADE_TYPE;
 #define TP_GRADE_NET_KEYFRAME  0x2000000000
 
 typedef ULONGLONG  TP_RES_TYPE;
+#define  TP_RES_UNKNOW              0x000000000
+#define  TP_RES_CATALOG             0x000000001
+#define  TP_RES_CLIP                0x000000002
+#define  TP_RES_TLPROGRAM           0x000000004
+#define  TP_RES_CGPROGRAM           0x000000008
+#define  TP_RES_PROJECT             0x000000010
 
 typedef  ULONGLONG               TP_NODE_TYPE;
 
 #define  TP_NODE_UNKNOW              0x00000000000    //
-
-
 #define  TP_NODE_TABLE               0x00000000001    //页数据
-
 #define  TP_NODE_PUBLIC              0x00000000002    //公用资源
 #define  TP_NODE_PRIVATE             0x00000000004    //我的资源
 #define  TP_NODE_RECYCLE             0x00000000008    //回收站
 #define  TP_NODE_SHARE               0x00000000010    //共享
 #define  TP_NODE_SYSTEM              0x00000000020    //系统
-
-
 #define  TP_NODE_COLORPREFABRICATE   0x00000000040
 #define  TP_NODE_PUBLICPREFABRICATE  0x00000000080
 #define  TP_NODE_OBJECTPREFABRICATE  0x00000000100
@@ -83,7 +84,6 @@ typedef  ULONGLONG               TP_NODE_TYPE;
 #define  TP_NODE_AEFFECT             0x00000002000    //音频特技
 #define  TP_NODE_VTEMPLATE           0x00000004000    //
 #define  TP_NODE_BTEMPLATE           0x00000008000    //
-
 #define  TP_NODE_TREFFECT            0x00000010000    //
 #define  TP_NODE_TEAMSPACE           0x00000020000    //
 #define  TP_NODE_NODE                0x00000040000    //接点
@@ -100,7 +100,6 @@ typedef  ULONGLONG               TP_NODE_TYPE;
 #define  TP_NODE_CGTEMPLATE          0x00020000000
 #define  TP_NODE_ITEM                0x00040000000    //文件
 #define  TP_NODE_ENDNODE             0x00080000000    //接点
-
 #define  TP_NODE_CGEFFECT            0x00100000000    //
 #define  TP_NODE_CGPREFABRICATE      0x00200000000    //预制
 #define  TP_NODE_CGFILTER            0x00400000000    //字幕滤镜
@@ -119,17 +118,103 @@ typedef struct tag_TPResVAType
 	WORD  wAudioIndex[16];
 	WORD  wVideoIndex;
 	WORD  wCGIndex;
-
-//	tag_TPResVAType()
-//	{
-//		Reset();
-//	}
-//	void Reset()
-//	{
-//		vVersion = 0;
-//		for(int l=0;l<16;l++) wAudioIndex[l] = l;
-//		wVideoIndex = 0;
-//		wCGIndex    = 0;
-//	}
 }TPResVAType;
+
+typedef void* HRESDATA;
+struct TPResClipImpData
+{
+    NSString* guidClip;
+    HRESDATA hCatParent;                                                //如果取值不为空，此素材创建到这个目录下
+    NSString* guidDBType;
+    NSString* sName;                                                      //素材名称
+    NSString* sKeyWord;                                                   //关键字
+    NSString* sDescription;                                               //素材描述
+    __int64 dwLength;
+    DWORD eClipType;
+    TP_VIDEO_STANDARD eVideoStandard;
+    NSString* sDataFileName[TP_CLIP_QUALITY_MAX][TP_CLIP_FILE_MAX];       //文件名
+    DWORD dwMediaType[TP_CLIP_QUALITY_MAX][TP_CLIP_FILE_MAX];           //音频文件对应路数
+    DWORD dwFileType[TP_CLIP_QUALITY_MAX][TP_CLIP_FILE_MAX];            //文件类型
+    DWORD dwFileOffset[TP_CLIP_QUALITY_MAX][TP_CLIP_FILE_MAX];          //文件偏移量
+    BYTE bAutoDelClass;
+
+    TPClipVAFormat stuFormat;                                           //转码格式
+    TP_CLIP_TRANS_STYLE eTransType;                                     //转码模式
+    TP_CLIP_MOVE_STYLE eMoveType;                                       //文件迁移模式
+
+    BOOL bDropFrame;                                                    //L是否是丢帧素材
+    INT64 lStartTC;                                                     //转换后的素材的LTC起始时码
+    INT64 lStartVITC;							//素材的Vitc时码
+    INT64 lRecData;							//拍摄时间
+};
+//////////////////////////////////////////////////////////////////////////
+typedef struct stu_TPResBaseData           //所有资源的基本信息
+{
+	DWORD			dwVersion;		    	//版本号
+	DWORD           dwState;                //当前状态
+	NSString*       resName;
+    NSString*       resIconPath;
+	NSString* 		guidRes;		    	//唯一索引
+	NSString* 		guidLink;               //快捷方式
+	NSString* 		guidType;               //类型唯一索引
+	NSString* 		guidDBType;             //数据库类型 ，资源可能来自不同的数据库
+	TP_RES_TYPE     eResType;				//资源类型
+
+	NSString* 		guidProject;			//所在项目
+	NSString* 		guidUserCreate;			//创建者
+	NSDate*         tmCreate;               //创建时间
+
+	NSDate*         tmLastModify;		     //最后一次修改时间
+	NSString* 		guidUserLastModify;      //最后一次修改人
+
+	NSDate*         tmLastRead;  		     //最后一次访问时间
+	DWORD			dwResFlag;	         		//标志
+	DWORD			dwOperateFlag;	       		//操作标志
+	DWORD           dwBookMarkIndex;            //标签索引
+
+	NSString* 		guidNode;                   //目录GUID
+	ULONGLONG       eNodeType;                  //目录类型
+
+	DWORD           dwLockRead;                 //缩定计数
+	DWORD           dwLockWrite;
+	DWORD           dwLockDelete;
+
+	DWORD           dwRefCount;
+	LPARAM          lParam;
+	BOOL            bUpdateView;
+
+	NSString* 		guidDevice;                //光盘设备GUID
+	long            lDeviceFileIndex;          //光盘设备文件索引
+	UINT            uResSource;                //资源来源
+	TP_VIDEO_STANDARD eVideoStandard;
+}TPResBaseData;
+typedef struct _tagTPResCatalogData{
+    TPResBaseData* stuBaseData;
+}TPResCatalogData;
+//素材信息
+typedef struct _tagTPResClipData
+{
+    TPResBaseData* stuBaseData;
+    __int64 lTrimIn;		//入点
+    __int64 lTrimOut;		//出点
+    __int64 lLength;
+    DWORD dwFileType;
+    TPClipQualityFile2 aQuality[TP_CLIP_QUALITY_MAX];   //文件信息
+}TPResClipData;
+//////////////////////////////////////////////////////////////////////////
+
+//时间线信息
+typedef struct _tagTPResProgramData
+{
+    TPResBaseData* stuBaseData;
+}TPResProgramData;
+//////////////////////////////////////////////////////////////////////////
+
+//模板信息
+typedef struct _tagTPResTemplateData
+{
+    TPResBaseData* stuBaseData;
+    NSString*      resPath;
+}TPResTemplateData;
+//////////////////////////////////////////////////////////////////////////
 
