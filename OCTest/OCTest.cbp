@@ -5,7 +5,7 @@
 		<Option title="OCTest" />
 		<Option pch_mode="2" />
 		<Option compiler="gnustep_mingw_compiler" />
-		<Option virtualFolders="BaseHeaders\;" />
+		<Option virtualFolders="BaseHeaders\;codeStandard\;" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/OCTest" prefix_auto="1" extension_auto="1" />
@@ -47,7 +47,25 @@
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="TPCacheManage.h" />
+		<Unit filename="TPClassType.h">
+			<Option virtualFolder="codeStandard/" />
+		</Unit>
+		<Unit filename="TPCodeStandard.h">
+			<Option virtualFolder="codeStandard/" />
+		</Unit>
+		<Unit filename="TPEnumOptions.h">
+			<Option virtualFolder="codeStandard/" />
+		</Unit>
 		<Unit filename="TPFileOperation.h" />
+		<Unit filename="TPIsEqual.h">
+			<Option virtualFolder="codeStandard/" />
+		</Unit>
+		<Unit filename="TPLiteral.h">
+			<Option virtualFolder="codeStandard/" />
+		</Unit>
+		<Unit filename="TPProperty.h">
+			<Option virtualFolder="codeStandard/" />
+		</Unit>
 		<Unit filename="TPResBase.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
@@ -64,6 +82,9 @@
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="TPResStorageFilePlugin.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="TPResTest.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="main.m">
