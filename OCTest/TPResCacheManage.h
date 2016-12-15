@@ -31,6 +31,8 @@
 //
 - (void) emptyCache;
 - (void) print;
+//
++ (TPResCache *) defaultCache;
 @end
 
 @implementation TPResCache
@@ -63,6 +65,13 @@
     [m_resCatalogCaches dealloc];
     [m_resClipCaches dealloc];
     [super dealloc];
+}
++ (TPResCache *) defaultCache
+{
+    static TPResCache *resCacheManage;
+    if(resCacheManage == nil)
+        resCacheManage = [TPResCache new];
+    return resCacheManage;
 }
 - (void) emptyCache
 {

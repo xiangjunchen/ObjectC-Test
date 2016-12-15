@@ -17,6 +17,9 @@
     NSString *str1 = @"";
     NSLog(@"%@",date);
 
+    [[TPResCache defaultCache] print];
+    [[TPResCache defaultCache] print];
+    return;
     TPResCache *cache = [[TPResCache alloc]
                                 initWithbUpdate: FALSE
                                 dwTickUpdate: 0
